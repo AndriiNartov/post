@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+
+        <div class="col-6">
+            <form action="http://utils.nartovcv.online/currency?date={{ form.date.data }}" method="get">
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4" style="color: white">Получить курс валют</legend>
+                    <div class="form-group mt-2">
+                        {{ form.date.label(class="form-control-label", style="color: white") }}
+                        {{ form.date(class="form-control") }}
+                        {% if form.date.errors %}
+                            <span class="text-danger">
+                                {% for error in form.date.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group mt-5">
+                        {{ form.submit(class="btn btn-primary mr-5") }}
+                    </div>
+                </fieldset>
+            </form>
+            {% if text_area_form %}
+            <form action="">
+                <div class="form-group mt-4">
+                    {{ text_area_form.text.label(class="form-control-label", style="color: white") }}
+                    {{ text_area_form.text(class="form-control", rows="4", id="js-copytextarea", readonly="true", style="resize: none") }}
+                </div>
+                <button class="btn btn-primary mt-4" id="js-textareacopybtn">Копировать</button>
+            </form>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+window.onload = function () {
+  // Get all the elements that match the selector as arrays
+  var copyTextareaBtn = Array.prototype.slice.call(document.querySelectorAll('#js-textareacopybtn'));
+  var copyTextarea = Array.prototype.slice.call(document.querySelectorAll('#js-copytextarea'));
+
+  // Loop through the button array and set up event handlers for each element
+  copyTextareaBtn.forEach(function(btn, idx){
+
+    btn.addEventListener("click", function(){
+
+      // Get the textarea who's index matches the index of the button
+      copyTextarea[idx].select();
+
+      try {
+        var msg = document.execCommand('copy') ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
+      } catch (err) {
+        console.log('Whoops, unable to copy');
+      }
+
+    });
+
+  });
+}
+</script>
+{% endblock %}

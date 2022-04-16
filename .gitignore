@@ -1,0 +1,12 @@
+*.pyc
+*.xlsx
+__pycache__/
+~lock.*
+.venv
+.idea
+.env
+*.db
+*.log*
+README.md
+/venv
+

@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <a href="{{ url_for('add_new_letter') }}" class="btn btn-primary btn-lg">Добавить письмо</a>
+    <a href="#" class="btn btn-primary btn-lg">TODO</a>
+</div>
+<div class="container mt-5">
+    <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+                <th>Дата отправки</th>
+                <th>Номер машины</th>
+                <th>Номер письма</th>
+                <th>Статус</th>
+                <th>Дата(статус)</th>
+                <th>Изменить</th>
+                <th>Удалить</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for letter in letters.items %}
+            <tr {% if letter.status == 'Доставлено' %}class="table-success"{% elif  letter.status == 'Авизо'%}class="table-danger"{% elif  letter.status == 'Передан на доставку'%}class="table-warning"{% endif %}>
+                <td>{{ letter.sending_date.strftime('%d.%m.%Y') }}</td>
+                <td {% if letter.comment %}title="{{ letter.comment }}" style="color: blue"{% endif %}>{{ letter.truck.plate_number }}</td>
+                <td><a href="https://emonitoring.poczta-polska.pl/?numer={{ letter.track_number }}" target="_blank">{{ letter.track_number }}</a></td>
+                <td {% if letter.status == 'Не бьётся' %} style="color: red"{% endif %}>{{ letter.status }}</td>
+                <td>{{ letter.status_date.strftime('%d.%m.%Y') }}</td>
+                <td><a href="{{ url_for('update_letter', track_number=letter.track_number) }}" class="btn btn-primary">Изменить</a></td>
+            <td><a href="{{ url_for('delete_letter', letter_id=letter.id) }}" class="btn btn-danger">Удалить</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% for page_num in letters.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+            {% if letters.page == page_num %}
+                <a class="btn btn-dark mt-3" href="{{ url_for('show_letters_list', page=page_num) }}">{{ page_num }}</a>
+            {% else %}
+                <a class="btn btn-outline-dark mt-3" href="{{ url_for('show_letters_list', page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+</div>
+
+{% endblock %}
